@@ -63,24 +63,24 @@ pub fn sort_scores_desc(records: &mut Vec<ScoreRecord>) {
 // Model it on parse_score above.
 pub fn parse_ship_line(line: &str) -> Option<ShipSpec> {
     let parts: Vec<&str> = line.trim().split(',').collect();
-if parts.len() != 2 {
-    return None;
-}
-let name = parts[0].trim();
-if name.is_empty() {
-return None;
-}
-let length = match parts[1].trim().parse::<usize>() {
-Ok(value) => value,
-Err(_) => return None,
-};
-if length < MIN_SHIP || length > MAX_SHIP {
-return None;
-}
-Some(ShipSpec {
-name: name.to_string(),
-length,
-})
+    if parts.len() != 2 {
+        return None;
+    }
+    let name = parts[0].trim();
+    if name.is_empty() {
+        return None;
+    }
+    let length = match parts[1].trim().parse::<usize>() {
+        Ok(value) => value,
+        Err(_) => return None,
+    };
+    if length < MIN_SHIP || length > MAX_SHIP {
+        return None;
+    }
+    Some(ShipSpec {
+        name: name.to_string(),
+        length,
+    })
 }
 // Task 2.
 // Read path and return every valid ship. Blank lines and lines starting with
@@ -89,8 +89,30 @@ length,
 //     Skipped N invalid line(s) in <path>
 // to stderr (eprintln!). If the file cannot be read, print the error to
 // stderr and return an empty Vec.
-pub fn load_fleet(_path: &str) -> Vec<ShipSpec> {
-    todo!("Task 2: load_fleet")
+pub fn load_fleet(path: &str) -> Vec<ShipSpec> {
+    let text = match std::fs::read_to_string(path) {
+        Ok(contents) => contents,
+        Err(error) => {
+            eprintln!("Could not read {}: {}", path, error);
+            return Vec::new();
+        }
+    };
+    let mut ships = Vec::new();
+    let mut rejected = 0;
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if trimmed.is_empty() || trimmed.starts_with('#') {
+            continue;
+        }
+        match parse_ship_line(trimmed) {
+            Some(ship) => ships.push(ship),
+            None => rejected += 1,
+        }
+    }
+    if rejected > 0 {
+        eprintln!("Skipped {} invalid line(s) in {}", rejected, path);
+    }
+    ships
 }
 
 // Task 3.
