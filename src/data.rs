@@ -61,10 +61,27 @@ pub fn sort_scores_desc(records: &mut Vec<ScoreRecord>) {
 // Return None unless the line has exactly one comma, a non-empty trimmed name,
 // and a length that parses as a number from MIN_SHIP to MAX_SHIP.
 // Model it on parse_score above.
-pub fn parse_ship_line(_line: &str) -> Option<ShipSpec> {
-    todo!("Task 1: parse_ship_line")
+pub fn parse_ship_line(line: &str) -> Option<ShipSpec> {
+    let parts: Vec<&str> = line.trim().split(',').collect();
+if parts.len() != 2 {
+    return None;
 }
-
+let name = parts[0].trim();
+if name.is_empty() {
+return None;
+}
+let length = match parts[1].trim().parse::<usize>() {
+Ok(value) => value,
+Err(_) => return None,
+};
+if length < MIN_SHIP || length > MAX_SHIP {
+return None;
+}
+Some(ShipSpec {
+name: name.to_string(),
+length,
+})
+}
 // Task 2.
 // Read path and return every valid ship. Blank lines and lines starting with
 // '#' are ignored silently. Any other line parse_ship_line rejects is counted;
