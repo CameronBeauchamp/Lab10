@@ -1,0 +1,3 @@
+Tugboat,1 - The length is below the minimum of 2.
+Dinghy,x - The length uses a letter instead of a number.
+Flagship - The line is missing a comma and ship length.
