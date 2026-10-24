@@ -173,7 +173,10 @@ pub fn load_board(path: &str) -> Option<Board> {
 // and return false.
 pub fn append_score(path: &str, record: &ScoreRecord) -> bool {
     let clean_name = record.name.replace(',', " ");
-    let file = std::fs::OpenOptions::new().create(true).open(path);
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(path);
     let mut file = match file {
         Ok(file) => file,
         Err(error) => {
