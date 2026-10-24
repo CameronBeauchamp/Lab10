@@ -52,7 +52,7 @@ fn show_top_scores(n: usize) {
     }
     data::sort_scores_desc(&mut records);
     for (index, record) in records.iter().take(n).enumerate() {
-        println!("{}. {} {}", index + 1, record.name, record.score);
+        println!("{:>2}. {:<20} {:>4}", index + 1, record.name, record.score);
     }
 }
 
